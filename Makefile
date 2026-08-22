@@ -33,6 +33,12 @@ Artifacts/$(TARGET).xcresult: $(TEST_RESULTS)
 	xcrun xcresulttool merge $^ --output-path $@
 	rm -rf $^
 	xcrun xccov view --only-targets --report $@
+ifeq ($(GITHUB_ACTIONS),true)
+	@echo "### 📊 Code coverage ($(TARGET))" >> $$GITHUB_STEP_SUMMARY
+	@echo "\`\`\`text" >> $$GITHUB_STEP_SUMMARY
+	@xcrun xccov view --only-targets --report $@ >> $$GITHUB_STEP_SUMMARY
+	@echo "\`\`\`" >> $$GITHUB_STEP_SUMMARY
+endif
 
 # MARK: - format
 
