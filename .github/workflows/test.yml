@@ -18,23 +18,23 @@ jobs:
       matrix:
         include:
           - name: macOS
-            target: Artifacts/swift-file-dsl-macOS.xcresult
+            file: swift-file-dsl-macOS.xcresult
           - name: MacCatalyst
-            target: Artifacts/swift-file-dsl-MacCatalyst.xcresult
+            file: swift-file-dsl-MacCatalyst.xcresult
           - name: iOS
-            target: Artifacts/swift-file-dsl-iOS.xcresult
+            file: swift-file-dsl-iOS.xcresult
     steps:
       - name: Checkout
         uses: actions/checkout@v7
       - name: Build and test
-        run: make ${{ matrix.target }}
+        run: make Artifacts/${{ matrix.file }}
         shell: bash
       - name: Upload Artifacts
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: ${{ matrix.name }}-Artifacts
-          path: Artifacts
+          name: ${{ matrix.file }}
+          path: make Artifacts/${{ matrix.file }}
           retention-days: 1
           if-no-files-found: error
   Merge-Results:
@@ -48,19 +48,18 @@ jobs:
       - name: Download all xcresults
         uses: actions/download-artifact@v8
         with:
-          pattern: '*-Artifacts'
+          pattern: 'swift-file-*-iOS.xcresult'
           path: Artifacts
       - name: Merge Results
         run: |
-          ls -al
           ls -al Artifacts
           make Artifacts/swift-file-dsl.xcresult
         shell: bash
       - name: Upload final xcresult
         uses: actions/upload-artifact@v7
         with:
-          name: Artifacts
-          path: Artifacts
+          name: swift-file-dsl.xcresult
+          path: Artifacts/swift-file-dsl.xcresult
   SPM:
     runs-on: macOS-latest
     steps:
