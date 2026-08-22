@@ -11,12 +11,23 @@ on:
 
 jobs:
   Apple:
-    runs-on: macOS-latest
+    name: Test ${{ matrix.name }}
+    runs-on: macOS-26
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: macOS
+            target: Artifacts/swift-file-dsl-macOS.xcresult
+          - name: Mac Catalyst
+            target: Artifacts/swift-file-dsl-MacCatalyst.xcresult
+          - name: iOS
+            target: Artifacts/swift-file-dsl-macOS.xcresult
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Build and test
-        run: make test
+        run: make ${{ matrix.target }}
         shell: bash
   SPM:
     runs-on: macOS-latest

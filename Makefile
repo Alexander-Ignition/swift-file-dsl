@@ -25,6 +25,18 @@ Artifacts/$(TARGET).xcresult:
 		-quiet
 	xcrun xccov view --only-targets --report $@
 
+Artifacts/$(TARGET)-macOS.xcresult:
+	xcodebuild test -quiet -scheme $(TARGET) -resultBundlePath $@ -destination 'platform=macOS,arch=arm64'
+	xcrun xccov view --only-targets --report $@
+
+Artifacts/$(TARGET)-MacCatalyst.xcresult:
+	xcodebuild test -quiet -scheme $(TARGET) -resultBundlePath $@ -destination 'platform=macOS,arch=arm64,variant=Mac Catalyst'
+	xcrun xccov view --only-targets --report $@
+
+Artifacts/$(TARGET)-iOS.xcresult:
+	xcodebuild test -quiet -scheme $(TARGET) -resultBundlePath $@ -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
+	xcrun xccov view --only-targets --report $@
+
 # MARK: - format
 
 lint:
