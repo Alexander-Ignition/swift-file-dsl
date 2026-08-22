@@ -25,7 +25,7 @@ jobs:
             target: Artifacts/swift-file-dsl-macOS.xcresult
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Build and test
         run: make ${{ matrix.target }}
         shell: bash
@@ -33,7 +33,7 @@ jobs:
     runs-on: macOS-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Build and test
         run: swift test
         shell: bash
@@ -41,7 +41,7 @@ jobs:
     runs-on: macOS-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: swift-format lint
         run: make lint 2>&1 | .github/scripts/format.swift
         shell: bash
