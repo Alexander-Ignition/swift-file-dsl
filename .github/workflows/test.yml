@@ -18,22 +18,23 @@ jobs:
       matrix:
         include:
           - name: macOS
-            target: Artifacts/swift-file-dsl-macOS.xcresult
+            file: swift-file-dsl-macOS.xcresult
           - name: Mac Catalyst
-            target: Artifacts/swift-file-dsl-MacCatalyst.xcresult
+            file: swift-file-dsl-MacCatalyst.xcresult
           - name: iOS
-            target: Artifacts/swift-file-dsl-macOS.xcresult
+            file: swift-file-dsl-macOS.xcresult
     steps:
       - name: Checkout
         uses: actions/checkout@v7
       - name: Build and test
-        run: make ${{ matrix.target }}
+        run: make Artifacts/${{ matrix.file }}
         shell: bash
       - name: Upload xcresult
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          path: ${{ matrix.target }}
+          name: ${{ matrix.file }}
+          path: Artifacts/${{ matrix.file }}
           if-no-files-found: error
   SPM:
     runs-on: macOS-latest
