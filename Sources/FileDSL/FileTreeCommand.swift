@@ -34,7 +34,7 @@ public struct FileTreeCommand: Sendable {
     }
 
     nonisolated(nonsending) func write(
-        at baseURL: URL,
+        at  baseURL: URL,
         fileManager: FileManager
     ) async throws {
         switch target {
