@@ -29,6 +29,12 @@ jobs:
       - name: Build and test
         run: make ${{ matrix.target }}
         shell: bash
+      - name: Upload xcresult
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          path: ${{ matrix.target }}
+          if-no-files-found: error
   SPM:
     runs-on: macOS-latest
     steps:
