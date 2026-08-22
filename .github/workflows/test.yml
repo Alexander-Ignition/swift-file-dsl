@@ -22,7 +22,7 @@ jobs:
           - name: MacCatalyst
             target: Artifacts/swift-file-dsl-MacCatalyst.xcresult
           - name: iOS
-            target: Artifacts/swift-file-dsl-macOS.xcresult
+            target: Artifacts/swift-file-dsl-iOS.xcresult
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -47,10 +47,10 @@ jobs:
       - name: Download all xcresults
         uses: actions/download-artifact@v8
         with:
-          pattern: *-Artifacts
+          pattern: '*-Artifacts'
           path: Artifacts
       - name: Merge Results
-        run: xcrun xcresulttool merge Artifacts/swift-file-dsl-macOS.xcresult Artifacts/swift-file-dsl-MacCatalyst.xcresult Artifacts/swift-file-dsl-macOS.xcresult --output-path Artifacts/swift-file-dsl.xcresult
+        run: xcrun xcresulttool merge Artifacts/swift-file-dsl-macOS.xcresult Artifacts/swift-file-dsl-MacCatalyst.xcresult Artifacts/swift-file-dsl-iOS.xcresult --output-path Artifacts/swift-file-dsl.xcresult
         shell: bash
       - name: Upload final xcresult
         uses: actions/upload-artifact@v7
