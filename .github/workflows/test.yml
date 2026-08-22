@@ -52,8 +52,8 @@ jobs:
           path: Artifacts
       - name: Merge Results
         run: |
-          tree -L 1 .
-          tree Artifacts -L 1
+          ls -al
+          ls -al Artifacts
           make Artifacts/swift-file-dsl.xcresult
         shell: bash
       - name: Upload final xcresult
