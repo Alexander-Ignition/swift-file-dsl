@@ -26,8 +26,10 @@ extension FileHierarchy {
         return current.treeDescription
     }
 
-    nonisolated(nonsending)
-    public func write(at baseURL: URL, fileManager: FileManager = .default) async throws {
+    nonisolated(nonsending) public func write(
+        at baseURL: URL,
+        fileManager: FileManager = .default
+    ) async throws {
         for command in fileTreeCommands {
             try await command.write(at: baseURL, fileManager: fileManager)
         }

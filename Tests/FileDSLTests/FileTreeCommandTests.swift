@@ -13,21 +13,29 @@ struct FileTreeCommandTests {
     }
 
     @Test func treeDescription() {
-        let packageFiles = FileTreeCommand(name: "PackageName", commands: [
-            FileTreeCommand(name: "README.md", target: emptyFile),
-            FileTreeCommand(name: "Sources", commands: [
-                FileTreeCommand(name: "main.swift", target: emptyFile),
-                FileTreeCommand(name: "Models", commands: [
-                    FileTreeCommand(name: "User.swift", target: emptyFile),
-                    FileTreeCommand(name: "FileItem.swift", target: emptyFile)
-                ]),
-                FileTreeCommand(name: "Utils.swift", target: emptyFile)
-            ]),
-            FileTreeCommand(name: "Tests", commands: [
-                FileTreeCommand(name: "LinuxMain.swift", target: emptyFile)
-            ]),
-            FileTreeCommand(name: "Package.swift", target: emptyFile)
-        ])
+        let packageFiles = FileTreeCommand(
+            name: "PackageName",
+            commands: [
+                FileTreeCommand(name: "README.md", target: emptyFile),
+                FileTreeCommand(
+                    name: "Sources",
+                    commands: [
+                        FileTreeCommand(name: "main.swift", target: emptyFile),
+                        FileTreeCommand(
+                            name: "Models",
+                            commands: [
+                                FileTreeCommand(name: "User.swift", target: emptyFile),
+                                FileTreeCommand(name: "FileItem.swift", target: emptyFile),
+                            ]),
+                        FileTreeCommand(name: "Utils.swift", target: emptyFile),
+                    ]),
+                FileTreeCommand(
+                    name: "Tests",
+                    commands: [
+                        FileTreeCommand(name: "LinuxMain.swift", target: emptyFile)
+                    ]),
+                FileTreeCommand(name: "Package.swift", target: emptyFile),
+            ])
 
         let expected = """
             PackageName
@@ -93,14 +101,18 @@ struct FileTreeCommandTests {
     func `directory exists`() async throws {
         let tmp = TemporaryDirectory.current
 
-        let command1 = FileTreeCommand(name: "N", commands: [
-            FileTreeCommand(name: "1.json", string: #"{"id": 1}"#)
-        ])
+        let command1 = FileTreeCommand(
+            name: "N",
+            commands: [
+                FileTreeCommand(name: "1.json", string: #"{"id": 1}"#)
+            ])
         try await command1.write(at: tmp.url, fileManager: .default)
 
-        let command2 = FileTreeCommand(name: "N", commands: [
-            FileTreeCommand(name: "2.json", string: #"{"id": 2}"#)
-        ])
+        let command2 = FileTreeCommand(
+            name: "N",
+            commands: [
+                FileTreeCommand(name: "2.json", string: #"{"id": 2}"#)
+            ])
         try await command2.write(at: tmp.url, fileManager: .default)
 
         try tmp.snapshot { dir in
