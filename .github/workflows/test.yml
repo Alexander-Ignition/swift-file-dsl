@@ -12,7 +12,7 @@ on:
 jobs:
   Apple:
     name: Test ${{ matrix.name }}
-    runs-on: macOS-26
+    runs-on: macOS-latest
     strategy:
       fail-fast: false
       matrix:
@@ -36,6 +36,27 @@ jobs:
           name: ${{ matrix.name }}-Artifacts
           path: Artifacts
           if-no-files-found: error
+  Merge-Results:
+    name: Merge All Test Reports
+    runs-on: macOS-latest
+    needs: Apple
+    if: always()
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Download all xcresults
+        uses: actions/download-artifact@v8
+        with:
+          pattern: *-Artifacts
+          path: Artifacts
+      - name: Merge Results
+        run: xcrun xcresulttool merge Artifacts/swift-file-dsl-macOS.xcresult Artifacts/swift-file-dsl-MacCatalyst.xcresult Artifacts/swift-file-dsl-macOS.xcresult --output-path Artifacts/swift-file-dsl.xcresult
+        shell: bash
+      - name: Upload final xcresult
+        uses: actions/upload-artifact@v7
+        with:
+          name: Artifacts
+          path: Artifacts
   SPM:
     runs-on: macOS-latest
     steps:
