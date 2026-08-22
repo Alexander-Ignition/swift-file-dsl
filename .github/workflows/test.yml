@@ -35,9 +35,10 @@ jobs:
         with:
           name: ${{ matrix.name }}-Artifacts
           path: Artifacts
+          retention-days: 1
           if-no-files-found: error
   Merge-Results:
-    name: Merge All Test Reports
+    name: Merge results
     runs-on: macOS-latest
     needs: Apple
     if: always()
@@ -50,7 +51,10 @@ jobs:
           pattern: '*-Artifacts'
           path: Artifacts
       - name: Merge Results
-        run: xcrun xcresulttool merge Artifacts/swift-file-dsl-macOS.xcresult Artifacts/swift-file-dsl-MacCatalyst.xcresult Artifacts/swift-file-dsl-iOS.xcresult --output-path Artifacts/swift-file-dsl.xcresult
+        run: |
+          tree -L 1 .
+          tree Artifacts -L 1
+          make Artifacts/swift-file-dsl.xcresult
         shell: bash
       - name: Upload final xcresult
         uses: actions/upload-artifact@v7
