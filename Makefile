@@ -8,33 +8,30 @@ clean:
 
 # MARK: - tests
 
-test: clean Artifacts/$(TARGET).xcresult
-
-Artifacts/$(TARGET).xcresult:
-	@swift --version
-	@xcodebuild -version
-	@xcodebuild -list -quiet
-	xcodebuild test \
-		-scheme $(TARGET) \
-		-destination 'platform=macOS,arch=arm64' \
-		-destination 'platform=macOS,arch=arm64,variant=Mac Catalyst' \
-		-destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
-		-disable-concurrent-destination-testing \
-		-derivedDataPath DerivedData \
-		-resultBundlePath $@ \
-		-quiet
-	xcrun xccov view --only-targets --report $@
+XCODE_TEST = xcodebuild test \
+	-quiet\
+	-scheme $(TARGET) \
+	-resultBundlePath $@
 
 Artifacts/$(TARGET)-macOS.xcresult:
-	xcodebuild test -quiet -scheme $(TARGET) -resultBundlePath $@ -destination 'platform=macOS,arch=arm64'
-	xcrun xccov view --only-targets --report $@
+	$(XCODE_TEST) -destination 'platform=macOS,arch=arm64'
 
 Artifacts/$(TARGET)-MacCatalyst.xcresult:
-	xcodebuild test -quiet -scheme $(TARGET) -resultBundlePath $@ -destination 'platform=macOS,arch=arm64,variant=Mac Catalyst'
-	xcrun xccov view --only-targets --report $@
+	$(XCODE_TEST) -destination 'platform=macOS,arch=arm64,variant=Mac Catalyst'
 
 Artifacts/$(TARGET)-iOS.xcresult:
-	xcodebuild test -quiet -scheme $(TARGET) -resultBundlePath $@ -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
+	$(XCODE_TEST) -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
+
+TEST_RESULTS = \
+	Artifacts/$(TARGET)-macOS.xcresult \
+	Artifacts/$(TARGET)-MacCatalyst.xcresult \
+	Artifacts/$(TARGET)-iOS.xcresult
+
+test: Artifacts/$(TARGET).xcresult
+
+Artifacts/$(TARGET).xcresult: $(TEST_RESULTS)
+	xcrun xcresulttool merge $^ --output-path $@
+	rm -rf $^
 	xcrun xccov view --only-targets --report $@
 
 # MARK: - format
