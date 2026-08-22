@@ -34,7 +34,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.file }}
-          path: make Artifacts/${{ matrix.file }}
+          path: Artifacts/${{ matrix.file }}
           retention-days: 1
           if-no-files-found: error
   Merge-Results:
