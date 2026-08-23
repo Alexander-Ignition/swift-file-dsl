@@ -34,8 +34,8 @@ test:
 	$(MAKE) Artifacts/$(TARGET).xcresult
 
 Artifacts/$(TARGET).xcresult: $(wildcard Artifacts/$(TARGET)-*.xcresult)
+	rm -rf $@
 	xcrun xcresulttool merge $^ --output-path $@
-	rm -rf $^
 	xcrun xccov view --only-targets --report $@
 ifeq ($(GITHUB_ACTIONS),true)
 	@echo "### 📊 Code coverage ($(TARGET))" >> $$GITHUB_STEP_SUMMARY
@@ -43,3 +43,15 @@ ifeq ($(GITHUB_ACTIONS),true)
 	@xcrun xccov view --only-targets --report $@ >> $$GITHUB_STEP_SUMMARY
 	@echo "\`\`\`" >> $$GITHUB_STEP_SUMMARY
 endif
+
+# MARK: - zip
+
+Artifacts/$(TARGET)-%.xcresult.zip: Artifacts/$(TARGET)-%.xcresult
+	cd Artifacts && zip -q -r $(notdir $<).zip $(notdir $<)
+	rm -rf $<
+
+Artifacts/$(TARGET).xcresult.zip:
+	ls Artifacts
+	unzip -q "Artifacts/$(TARGET)-*.zip" -d Artifacts
+	$(MAKE) Artifacts/$(TARGET).xcresult
+	cd Artifacts && zip -q -r $(TARGET).xcresult.zip $(TARGET).xcresult
