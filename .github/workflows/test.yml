@@ -29,13 +29,13 @@ jobs:
       - name: Build and test
         run: |
           make ${{ matrix.target }}
-          zip -r ${{ matrix.target }}.zip ${{ matrix.target }}
+          zip -q -r ${{ matrix.target }}.zip ${{ matrix.target }}
         shell: bash
       - name: Upload Artifacts
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: swift-file-dsl-${{ matrix.name }}.xcresult.zip
+          name: swift-file-dsl-${{ matrix.name }}.xcresult
           path: ${{ matrix.target }}.zip
           retention-days: 1
   Summary:
@@ -48,19 +48,21 @@ jobs:
       - name: Download all xcresult
         uses: actions/download-artifact@v8
         with:
-          pattern: 'swift-file-dsl-*.xcresult.zip'
+          pattern: 'swift-file-dsl-*.xcresult'
           path: Artifacts
+          merge-multiple: true
       - name: Merge xcresult
         run: |
+          unzip -q "Artifacts/*.zip" -d Artifacts/
           ls -al Artifacts
-          unzip Artifacts/swift-file-dsl-iOS.xcresult.zip -d Artifacts/
           make Artifacts/swift-file-dsl.xcresult
+          zip -q -r Artifacts/swift-file-dsl.xcresult.zip Artifacts/swift-file-dsl.xcresult
         shell: bash
       - name: Upload final xcresult
         uses: actions/upload-artifact@v7
         with:
           name: swift-file-dsl.xcresult
-          path: Artifacts/swift-file-dsl.xcresult
+          path: Artifacts/swift-file-dsl.xcresult.zip
   SPM:
     runs-on: macOS-latest
     steps:
