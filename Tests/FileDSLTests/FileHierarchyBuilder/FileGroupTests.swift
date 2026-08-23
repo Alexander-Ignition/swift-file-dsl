@@ -27,7 +27,6 @@ struct FileGroupTests {
 
         #expect(type(of: fileHierarchy) == _FileGroup<File, File, Directory<File>>.self)
 
-
     }
 
     @Test func memoryLayout() {

@@ -41,8 +41,8 @@ private let _gitHubIssueHandlingTrait = IssueHandlingTrait.compactMapIssues { (i
     return issue
 }
 
-private extension Issue {
-    var workflowCommand: GitHubActions.WorkflowCommand {
+extension Issue {
+    fileprivate var workflowCommand: GitHubActions.WorkflowCommand {
         switch severity {
         case .warning:
             GitHubActions.WorkflowCommand.warning

@@ -26,13 +26,17 @@ public struct FileTreeCommand: Sendable {
     }
 
     public init(name: String, string: String) {
-        self.init(name: name, target: .file(writer: { fileURL in
-            try string.write(to: fileURL, atomically: true, encoding: .utf8)
-        }))
+        self.init(
+            name: name,
+            target: .file(writer: { fileURL in
+                try string.write(to: fileURL, atomically: true, encoding: .utf8)
+            }))
     }
 
-    nonisolated(nonsending)
-    func write(at baseURL: URL, fileManager: FileManager) async throws {
+    nonisolated(nonsending) func write(
+        at baseURL: URL,
+        fileManager: FileManager
+    ) async throws {
         switch target {
         case .file(let writer):
             let url = baseURL.appending(component: name, directoryHint: .notDirectory)

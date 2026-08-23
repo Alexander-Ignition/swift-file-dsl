@@ -1,0 +1,75 @@
+name: Test
+on:
+  push:
+    branches:
+      - main
+    tags-ignore:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  Apple:
+    name: Test ${{ matrix.name }}
+    runs-on: macOS-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: macOS
+            path: Artifacts/swift-file-dsl-macOS.xcresult.zip
+          - name: MacCatalyst
+            path: Artifacts/swift-file-dsl-MacCatalyst.xcresult.zip
+          - name: iOS
+            path: Artifacts/swift-file-dsl-iOS.xcresult.zip
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Build and test
+        run: make ${{ matrix.path }}
+        shell: bash
+      - name: Upload Artifacts
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: swift-file-dsl-${{ matrix.name }}.xcresult
+          path: ${{ matrix.path }}
+          retention-days: 1
+  Summary:
+    runs-on: macOS-latest
+    needs: Apple
+    if: always()
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Download all xcresult
+        uses: actions/download-artifact@v8
+        with:
+          pattern: 'swift-file-dsl-*.xcresult'
+          path: Artifacts
+          merge-multiple: true
+      - name: Merge xcresult
+        run:  make Artifacts/swift-file-dsl.xcresult.zip
+        shell: bash
+      - name: Upload final xcresult
+        uses: actions/upload-artifact@v7
+        with:
+          name: swift-file-dsl.xcresult
+          path: Artifacts/swift-file-dsl.xcresult.zip
+  SPM:
+    runs-on: macOS-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Build and test
+        run: swift test
+        shell: bash
+  Lint:
+    runs-on: macOS-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: swift-format lint
+        run: make lint 2>&1 | .github/scripts/format.swift
+        shell: bash

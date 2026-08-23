@@ -1,5 +1,5 @@
-import Foundation
 import FileDSL
+import Foundation
 import Testing
 
 @Suite(.gitHubActions)
