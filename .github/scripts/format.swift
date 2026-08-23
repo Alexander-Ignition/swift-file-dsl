@@ -1,9 +1,7 @@
 #!/usr/bin/env swift
 
-/*
- Workflow commands for GitHub Actions
- https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/workflow-commands-for-github-actions
- */
+// Workflow commands for GitHub Actions
+// https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/workflow-commands-for-github-actions
 
 let regex = #/(?<file>.+\.swift):(?<line>\d+):(?<column>\d+): (?<severity>.+): \[(?<title>.+)\] (?<message>.+)/#
 while let line = readLine() {
