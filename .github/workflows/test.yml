@@ -18,26 +18,23 @@ jobs:
       matrix:
         include:
           - name: macOS
-            target: Artifacts/swift-file-dsl-macOS.xcresult
+            path: Artifacts/swift-file-dsl-macOS.xcresult.zip
           - name: MacCatalyst
-            target: Artifacts/swift-file-dsl-MacCatalyst.xcresult
+            path: Artifacts/swift-file-dsl-MacCatalyst.xcresult.zip
           - name: iOS
-            target: Artifacts/swift-file-dsl-iOS.xcresult
+            path: Artifacts/swift-file-dsl-iOS.xcresult.zip
     steps:
       - name: Checkout
         uses: actions/checkout@v7
       - name: Build and test
-        run: |
-          make ${{ matrix.target }}
-          cd Artifacts
-          zip -q -r swift-file-dsl-${{ matrix.name }}.xcresult.zip swift-file-dsl-${{ matrix.name }}.xcresult
+        run: make ${{ matrix.path }}
         shell: bash
       - name: Upload Artifacts
         if: always()
         uses: actions/upload-artifact@v7
         with:
           name: swift-file-dsl-${{ matrix.name }}.xcresult
-          path: ${{ matrix.target }}.zip
+          path: ${{ matrix.path }}
           retention-days: 1
   Summary:
     runs-on: macOS-latest
@@ -53,12 +50,7 @@ jobs:
           path: Artifacts
           merge-multiple: true
       - name: Merge xcresult
-        run: |
-          unzip -q "Artifacts/*.zip" -d Artifacts/
-          ls Artifacts
-          make Artifacts/swift-file-dsl.xcresult
-          cd Artifacts
-          zip -q -r swift-file-dsl.xcresult.zip swift-file-dsl.xcresult
+        run:  make Artifacts/swift-file-dsl.xcresult.zip
         shell: bash
       - name: Upload final xcresult
         uses: actions/upload-artifact@v7
