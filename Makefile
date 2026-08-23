@@ -6,12 +6,17 @@ clean:
 	swift package clean
 	rm -rf Artifacts
 
+# MARK: - format
+
+lint:
+	xcrun swift-format lint --recursive --strict ./
+
+format:
+	xcrun swift-format --recursive --in-place ./
+
 # MARK: - tests
 
-XCODE_TEST = xcodebuild test \
-	-quiet\
-	-scheme $(TARGET) \
-	-resultBundlePath $@
+XCODE_TEST = xcodebuild test -quiet -scheme $(TARGET) -resultBundlePath $@
 
 Artifacts/$(TARGET)-macOS.xcresult:
 	$(XCODE_TEST) -destination 'platform=macOS,arch=arm64'
@@ -22,14 +27,13 @@ Artifacts/$(TARGET)-MacCatalyst.xcresult:
 Artifacts/$(TARGET)-iOS.xcresult:
 	$(XCODE_TEST) -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
 
-TEST_RESULTS = \
-	Artifacts/$(TARGET)-macOS.xcresult \
-	Artifacts/$(TARGET)-MacCatalyst.xcresult \
-	Artifacts/$(TARGET)-iOS.xcresult
+test:
+	$(MAKE) Artifacts/$(TARGET)-macOS.xcresult
+	$(MAKE) Artifacts/$(TARGET)-MacCatalyst.xcresult
+	$(MAKE) Artifacts/$(TARGET)-iOS.xcresult
+	$(MAKE) Artifacts/$(TARGET).xcresult
 
-test: Artifacts/$(TARGET).xcresult
-
-Artifacts/$(TARGET).xcresult: $(TEST_RESULTS)
+Artifacts/$(TARGET).xcresult: $(wildcard Artifacts/$(TARGET)-*.xcresult)
 	xcrun xcresulttool merge $^ --output-path $@
 	rm -rf $^
 	xcrun xccov view --only-targets --report $@
@@ -39,11 +43,3 @@ ifeq ($(GITHUB_ACTIONS),true)
 	@xcrun xccov view --only-targets --report $@ >> $$GITHUB_STEP_SUMMARY
 	@echo "\`\`\`" >> $$GITHUB_STEP_SUMMARY
 endif
-
-# MARK: - format
-
-lint:
-	xcrun swift-format lint --recursive --strict ./
-
-format:
-	xcrun swift-format --recursive --in-place ./
