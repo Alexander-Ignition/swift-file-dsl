@@ -35,8 +35,8 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: swift-file-dsl-${{ matrix.name }}.xcresult.zip
-          path: ${{ matrix.target }}
+          name: swift-file-dsl-${{ matrix.name }}.xcresult
+          path: ${{ matrix.target }}.zip
           retention-days: 1
   Summary:
     runs-on: macOS-latest
@@ -48,9 +48,9 @@ jobs:
       - name: Download all xcresults
         uses: actions/download-artifact@v8
         with:
-          pattern: 'swift-file-dsl-*.xcresult.zip'
+          pattern: 'swift-file-dsl-*.xcresult'
           path: Artifacts
-      - name: Merge Results
+      - name: Merge xcresult
         run: |
           ls -al Artifacts
           make Artifacts/swift-file-dsl.xcresult
