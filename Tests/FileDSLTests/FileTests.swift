@@ -22,7 +22,7 @@ struct FileTests {
             └── 2.txt
             """
         #expect(fileHierarchy.treeDescription == tree)
-        #expect(fileHierarchy.fileTreeCommands.count == 3)
+        #expect(fileHierarchy.fileTreeCommands.count == 2)
         #expect(type(of: fileHierarchy) == _FileGroup<File, File, File>.self)
     }
 
