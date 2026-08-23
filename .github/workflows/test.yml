@@ -35,7 +35,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: swift-file-dsl-${{ matrix.name }}.xcresult
+          name: swift-file-dsl-${{ matrix.name }}.xcresult.zip
           path: ${{ matrix.target }}.zip
           retention-days: 1
   Summary:
@@ -45,14 +45,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
-      - name: Download all xcresults
+      - name: Download all xcresult
         uses: actions/download-artifact@v8
         with:
-          pattern: 'swift-file-dsl-*.xcresult'
+          pattern: 'swift-file-dsl-*.xcresult.zip'
           path: Artifacts
       - name: Merge xcresult
         run: |
           ls -al Artifacts
+          unzip Artifacts/swift-file-dsl-iOS.xcresult.zip -d Artifacts/
           make Artifacts/swift-file-dsl.xcresult
         shell: bash
       - name: Upload final xcresult
