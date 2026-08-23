@@ -29,7 +29,8 @@ jobs:
       - name: Build and test
         run: |
           make ${{ matrix.target }}
-          zip -q -r ${{ matrix.target }}.zip ${{ matrix.target }}
+          cd Artifacts
+          zip -q -r swift-file-dsl-${{ matrix.name }}.xcresult.zip swift-file-dsl-${{ matrix.name }}.xcresult
         shell: bash
       - name: Upload Artifacts
         if: always()
@@ -54,9 +55,10 @@ jobs:
       - name: Merge xcresult
         run: |
           unzip -q "Artifacts/*.zip" -d Artifacts/
-          ls -al Artifacts
+          ls Artifacts
           make Artifacts/swift-file-dsl.xcresult
-          zip -q -r Artifacts/swift-file-dsl.xcresult.zip Artifacts/swift-file-dsl.xcresult
+          cd Artifacts
+          zip -q -r swift-file-dsl.xcresult.zip swift-file-dsl.xcresult
         shell: bash
       - name: Upload final xcresult
         uses: actions/upload-artifact@v7
