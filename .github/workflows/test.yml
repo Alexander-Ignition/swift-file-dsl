@@ -57,7 +57,7 @@ jobs:
         with:
           name: swift-file-dsl.xcresult
           path: Artifacts/swift-file-dsl.xcresult.zip
-  SPM:
+  SwiftPM:
     runs-on: macOS-latest
     steps:
       - name: Checkout
