@@ -122,4 +122,22 @@ struct FileTreeCommandTests {
             }
         }
     }
+
+    @Test(.temporaryDirectory)
+    func `cannot overwrite existing file with a directory`() async throws {
+        let tmp = TemporaryDirectory.current
+
+        let command1 = FileTreeCommand(name: "N", string: "n")
+        try await command1.write(at: tmp.url, fileManager: .default)
+
+        await #expect {
+            let command2 = FileTreeCommand(name: "N", commands: [])
+            try await command2.write(at: tmp.url, fileManager: .default)
+        } throws: { error in
+            (error as? CocoaError)?.code == .fileWriteFileExists
+        }
+        try tmp.snapshot { dir in
+            #expect(dir.file("N") == "n")
+        }
+    }
 }
