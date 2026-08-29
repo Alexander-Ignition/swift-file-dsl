@@ -7,17 +7,26 @@ extension TestTrait where Self == TemporaryDirectoryTrait {
     }
 }
 
-struct TemporaryDirectoryTrait: TestScoping, TestTrait {
+extension SuiteTrait where Self == TemporaryDirectoryTrait {
+    static var temporaryDirectory: TemporaryDirectoryTrait {
+        TemporaryDirectoryTrait()
+    }
+}
+
+struct TemporaryDirectoryTrait: TestScoping, TestTrait, SuiteTrait {
     func provideScope(
         for test: Test,
         testCase: Test.Case?,
         performing function: @Sendable () async throws -> Void
     ) async throws {
 
+        guard TemporaryDirectory.url == nil else {
+            return try await function()
+        }
         let fileManager = FileManager.default
 
         let url = fileManager.temporaryDirectory.appendingPathComponent(
-            "\(test.sourceLocation.fileName)-\(test.name)-\(test.sourceLocation.line)",
+            "\(test.sourceLocation.fileName)-\(test.sourceLocation.line)",
             isDirectory: true
         )
         try fileManager.createDirectory(
