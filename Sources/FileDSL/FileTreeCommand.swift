@@ -44,12 +44,7 @@ public struct FileTreeCommand: Sendable {
 
         case .directory(let items):
             let url = baseURL.appending(component: name, directoryHint: .isDirectory)
-            do {
-                try fileManager.createDirectory(at: url, withIntermediateDirectories: false)
-            } catch let error as CocoaError where error.code == .fileWriteFileExists {
-                // Ok, NSFileWriteFileExistsError
-                // Could not perform an operation because the destination file already exists.
-            }
+            try fileManager.createDirectory(at: url, withIntermediateDirectories: true) // mkdir -p
             for item in items {
                 try await item.write(at: url, fileManager: fileManager)
             }
