@@ -130,12 +130,12 @@ struct FileTreeCommandTests {
         let command1 = FileTreeCommand(name: "N", string: "n")
         try await command1.write(at: tmp.url, fileManager: .default)
 
-        await #expect {
+        let error = await #expect(throws: CocoaError.self) {
             let command2 = FileTreeCommand(name: "N", commands: [])
             try await command2.write(at: tmp.url, fileManager: .default)
-        } throws: { error in
-            (error as? CocoaError)?.code == .fileWriteFileExists
         }
+        #expect(error?.code == .fileWriteFileExists)
+
         try tmp.snapshot { dir in
             #expect(dir.file("N") == "n")
         }
